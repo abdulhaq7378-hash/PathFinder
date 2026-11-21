@@ -1,0 +1,6 @@
+# src/main.py: NO dependencies (Python standard library only)
+# tools/ (dataset building, scoring, plots):
+numpy>=1.24
+pandas>=2.0
+matplotlib>=3.7
+evo>=1.25

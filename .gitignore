@@ -1,0 +1,8 @@
+data/
+__pycache__/
+*.pyc
+/team_bundle/
+*.zip
+docs/_template.pptx
+upload/
+!MIT_Team.zip

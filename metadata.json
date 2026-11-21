@@ -1,0 +1,71 @@
+{
+  "rows": 35629,
+  "column_order": "ts,gyro,accel",
+  "median_dt_s": 0.005,
+  "dropout_gaps": 774,
+  "dropout_time_s": 6.2,
+  "duplicate_stamps": 49,
+  "failure_rows": 1002,
+  "failure_seconds": 5.005,
+  "spikes_fixed": 340,
+  "static_intervals": 3,
+  "static_seconds": 17.36,
+  "gravity": 9.7798,
+  "gyro_bias_static": [
+    [
+      -0.00297,
+      0.02057,
+      0.07993
+    ],
+    [
+      -0.00293,
+      0.02059,
+      0.07977
+    ],
+    [
+      -0.00301,
+      0.02068,
+      0.07878
+    ]
+  ],
+  "mahony_bias_correction": [
+    -0.00253,
+    -0.00373,
+    -0.00739
+  ],
+  "blind_start_velocity": [
+    -0.329,
+    -0.117,
+    -0.156
+  ],
+  "runtime_wall_s": 0.333,
+  "runtime_cpu_s": 0.33,
+  "imu_duration_s": 184.095,
+  "ms_per_imu_second": 1.792,
+  "threads": 1,
+  "language": "Python 3.13, standard library only",
+  "params": {
+    "static_win": 0.5,
+    "static_gyro": 0.03,
+    "static_acc": 0.25,
+    "static_min": 0.6,
+    "kp": 0.15,
+    "ki": 0.02,
+    "kp_static": 2.0,
+    "acc_lp_tau": 0.25,
+    "acc_gate": 0.8,
+    "spike_k": 6.0,
+    "vel_tau_h": 1.5,
+    "vel_tau_v": 1.0,
+    "pos_tau_h": 5.0,
+    "pos_tau_v": 2.0,
+    "dedrift": 1.0,
+    "blind_v_tau": 3.0,
+    "blind_w_tau": 1.0,
+    "blind_avg_s": 0.5,
+    "gap_factor": 1.8
+  },
+  "peak_traced_heap_MB": 2.45,
+  "dataset": "EuRoC MH_01_easy, degraded with organiser degrade_imu.py (seed 42, max-level 1.0)",
+  "peak_heap_note": "tracemalloc peak over the whole process incl. imports (python main.py ... --profile)"
+}
