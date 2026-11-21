@@ -492,7 +492,7 @@ export const S13: React.FC = () => {
           <Kicker color={C.yellow}>what we tried and dropped</Kicker>
           <Title size={70} delay={3} style={{ marginTop: 14 }}>Rotor-drag physics model</Title>
           <div style={{ fontFamily: INTER, fontSize: 38, color: C.text, marginTop: 26, lineHeight: 1.4, opacity: ease(f, 12, 22) }}>
-            Holds on ground truth (corr 0.82), but <span style={{ color: C.red, fontWeight: 700 }}>4 to 10x worse</span> with estimated attitude. Documented in the repo, left out of the submission.
+            On MH_01 the drag signal is buried under rotor vibration: it explains at most <span style={{ color: C.red, fontWeight: 700 }}>6%</span> of the sideways acceleration, even with ideal calibration. Documented in the repo, left out of the submission.
           </div>
         </div>
       ) : (

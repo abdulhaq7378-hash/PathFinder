@@ -248,7 +248,7 @@ const S9 = () => (
     <GridBG tint={C.yellow} />
     <Head k="brownie points" t="Research beyond the baseline" color={C.yellow} />
     {[
-      ["Rotor-drag physics", "Multirotor horizontal acceleration is proportional to minus velocity (corr 0.82 on ground truth). Our drag-velocity EKF was 4 to 10x worse with estimated attitude, so it stays out of the submission and is documented."],
+      ["Rotor-drag physics", "A multirotor's sideways accelerometer reads drag, roughly minus k times velocity. On MH_01 that signal is buried under rotor vibration: a drag model explains at most 6% of it, even calibrated on ground truth. So it stays out of the submission, documented."],
       ["Memory engineering", "Lazy imports and a tiny argument parser save 1.8 MB of interpreter heap. Arrays are reused in place: about 57 bytes per IMU row."],
       ["Robust evaluation", "12 degraded variants: default, 1.5x harder, swapped-column script misuse, and crops that start mid-flight. Our scorer matches evo."],
       ["Honest limits and next steps", "An IMU alone cannot observe slow drift over minutes. Next: a tiny learned motion prior (about 200 KB 1D-CNN) and a drag model calibrated per platform."],

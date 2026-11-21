@@ -114,7 +114,7 @@ Full table: `results/benchmark.txt`. Figures: `results/*.png`.
 |---|---|---|
 | Plain strap-down integration | 12 m to 260 m ATE | rejected |
 | Gyro-only attitude in flight (no accel correction) | ATE ratio 1.7× to 70× baseline | rejected: tilt drift leaks gravity |
-| Rotor-drag velocity EKF (multirotor accel ∝ −velocity) | the relation holds on GT (corr 0.82), but with *estimated* attitude and self-calibrated offsets ATE got 4× to 10× worse | rejected for robustness; kept as future work |
+| Rotor-drag velocity (multirotor sideways accel ≈ −k·velocity) | on MH_01 the drag signal is buried under rotor vibration: in the thrust-perpendicular plane a drag model explains at most R² ≈ 0.06 of the accel (0.004 on the second axis), even on clean data and calibrated on ground truth (`tools/experiments/drag_check.py`); the EKF variant made ATE 4× to 10× worse | rejected; could help on faster flights |
 | Numpy implementation | `import numpy` = 8 MB traced heap | replaced by stdlib `array` buffers |
 
 ---
