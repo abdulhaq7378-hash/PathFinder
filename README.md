@@ -131,10 +131,19 @@ tools/make_data.py          builds clean / deg / deg_raw / deg_hard sets + TUM g
 tools/evaluate.py           ATE / waypoint / blind-5 s / RPE scoring (SE3 Umeyama)
 tools/bench.py              runs main.py on every test set and prints the table
 tools/plot.py               figures
-tools/explainer_video.py    renders the narrated video (offline Kokoro TTS)
+tools/make_sim.py           simulated drone flight with known ground truth, degraded with the organiser script (sanity test)
 results/                    benchmark table + figures
-docs/                       MIT_Team.pptx/.pdf presentation, MIT_Team_video.mp4 narrated walkthrough (<3 min), build_ppt.py
+docs/                       MIT_Team.pptx/.pdf presentation, MIT_Team_video.mp4 demo video (<3 min)
+docs/media/                 sources for the slides and video (Remotion scenes driven by our real MH_01 results)
 Dockerfile, requirements.txt
+```
+
+Quick sanity test without EuRoC (simulated 150 s flight, organiser degradation, known ground truth):
+
+```bash
+python tools/make_sim.py . sim 1.0
+python src/main.py sim/deg -o sim/est.txt
+python tools/evaluate.py sim/est.txt sim/gt.tum
 ```
 
 Reproduce the benchmark (tools need `numpy pandas matplotlib evo`; `main.py` needs nothing):
