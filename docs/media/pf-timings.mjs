@@ -1,4 +1,4 @@
-// usage: node pf-timings.mjs [voiceDir]
+﻿// usage: node pf-timings.mjs [voiceDir]
 // Builds src/pathfinder/timings.json. For each scene NN, uses <voiceDir>/NN.* if present:
 // trims silence, normalises loudness -> public/pathfinder/voice/NN.wav, Whisper word times aligned to the script.
 // Without a recording, falls back to an estimated duration (placeholder captions).
@@ -35,7 +35,7 @@ async function whisper(wav) {
     env.cacheDir = "./.models";
     asr = await pipeline("automatic-speech-recognition", "onnx-community/whisper-small_timestamped", { dtype: "fp32" });
   }
-  const raw = execFileSync(FF, ["-v", "error", "-i", wav, "-ac", "1", "-ar", "16000", "-f", "f32le", "-"], { maxBuffer: 1 << 30 });
+  const raw = execFileSync(FF, ["-nostdin", "-v", "error", "-i", wav, "-ac", "1", "-ar", "16000", "-f", "f32le", "-"], { maxBuffer: 1 << 30 });
   const audio = new Float32Array(raw.buffer, raw.byteOffset, raw.length / 4);
   const r = await asr(audio, { return_timestamps: "word", chunk_length_s: 30, stride_length_s: 5, language: "en", task: "transcribe" });
   return r.chunks.map((c) => ({ w: c.text.trim(), s: c.timestamp[0], e: c.timestamp[1] ?? c.timestamp[0] + 0.3 }));
@@ -61,11 +61,23 @@ function align(script, hyp, dur) {
 const scenes = [];
 for (const id of Object.keys(SCRIPT).sort()) {
   const words = SCRIPT[id].split(/\s+/);
-  const src = files.find((f) => path.parse(f).name.replace(/^0?/, "").padStart(2, "0") === id || path.parse(f).name === id);
+  const src = files.find((f) => {
+    const m = f.match(/^(\d+)/);
+    if (m) return m[1].padStart(2, "0") === id;
+    return id === "01" && /^hook/i.test(f);
+  });
   if (src) {
     const out = path.join(OUTV, `${id}.wav`);
-    execFileSync(FF, ["-v", "error", "-y", "-i", path.join(VOICE, src), "-ac", "1", "-ar", "48000",
-      "-af", "highpass=f=70,silenceremove=start_periods=1:start_threshold=-45dB:start_silence=0.08,areverse,silenceremove=start_periods=1:start_threshold=-45dB:start_silence=0.15,areverse,loudnorm=I=-16:TP=-2:LRA=9", out]);
+    const run = (af, t) => execFileSync(FF, ["-nostdin", "-v", "error", "-y", "-i", path.join(VOICE, src), "-vn", "-ac", "1", "-ar", "48000", "-af", af, out], { stdio: ["ignore", "pipe", "pipe"], timeout: t });
+    const chains = [
+      "highpass=f=70,silenceremove=start_periods=1:start_threshold=-45dB:start_silence=0.08,areverse,silenceremove=start_periods=1:start_threshold=-45dB:start_silence=0.15,areverse,loudnorm=I=-16:TP=-2:LRA=9",
+      "highpass=f=70,loudnorm=I=-16:TP=-2:LRA=9",
+      "highpass=f=70,dynaudnorm=f=150:g=15,volume=0.9",
+      "volume=1.0",
+    ];
+    let okc = -1;
+    for (let k = 0; k < chains.length && okc < 0; k++) { try { run(chains[k], 25000); okc = k; } catch (e) { console.log(`  ${id}: filter ${k} failed, trying next`); } }
+    if (okc < 0) throw new Error("audio conversion failed for " + src);
     const dur = (statSync(out).size - 44) / (48000 * 2);
     const hyp = await whisper(out);
     let { words: w, ratio } = align(words, hyp, dur);
@@ -81,3 +93,4 @@ for (const id of Object.keys(SCRIPT).sort()) {
 writeFileSync("src/pathfinder/timings.json", JSON.stringify({ scenes }, null, 1));
 const total = scenes.reduce((a, s) => a + s.dur + 0.25, 0) + 1.2;
 console.log("TOTAL", total.toFixed(1), "s", total > 180 ? "OVER 3:00!" : "");
+
