@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """Run src/main.py on every test set and score it. usage: bench.py [key=value ...] [--sets a,b]"""
 import json, os, subprocess, sys, tempfile
 from concurrent.futures import ProcessPoolExecutor
@@ -8,7 +8,7 @@ from evaluate import score
 
 def one(job):
     seq, var, sets = job
-    out = tempfile.mktemp(suffix='.txt', dir='/tmp/claude-0')
+    out = tempfile.mktemp(suffix='.txt')
     cmd = [sys.executable, os.path.join(ROOT, 'src', 'main.py'), os.path.join(ROOT, 'data', seq, var), '-o', out]
     if sets: cmd += ['--set'] + sets
     r = subprocess.run(cmd, capture_output=True, text=True)

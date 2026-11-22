@@ -1,6 +1,6 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """Figures for README / slides. usage: plot.py <seq> <variant>"""
-import os, sys, json, subprocess
+import os, sys, json, subprocess, tempfile
 import numpy as np
 import matplotlib; matplotlib.use('Agg')
 import matplotlib.pyplot as plt
@@ -9,7 +9,7 @@ sys.path.insert(0, HERE)
 from evaluate import load, associate, umeyama
 seq, var = (sys.argv[1:3] if len(sys.argv) > 2 else ('MH01', 'deg'))
 D = os.path.join(ROOT, 'data', seq); R = os.path.join(ROOT, 'results'); os.makedirs(R, exist_ok=True)
-est = '/tmp/claude-0/plot_est.txt'
+est = os.path.join(tempfile.gettempdir(), 'plot_est.txt')
 subprocess.run([sys.executable, os.path.join(ROOT, 'src/main.py'), os.path.join(D, var), '-o', est], check=True, capture_output=True)
 te, pe, qe = load(est); tg, pg, qg = load(os.path.join(D, 'gt.tum'))
 ie, ig = associate(te, tg); te, pe, pg = te[ie], pe[ie], pg[ig]
